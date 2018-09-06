@@ -1,0 +1,17 @@
+{
+    "name": "besh/mini_blog",
+    "require": {
+        "phpmailer/phpmailer": "^6.0"
+    },
+    "autoload": {
+        "classmap": [
+            "includes/classes"
+        ]
+    },
+    "authors": [
+        {
+            "name": "Beshara Saleh",
+            "email": "beshsaleh@gmail.com"
+        }
+    ]
+}

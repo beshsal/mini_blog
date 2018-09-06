@@ -1,0 +1,21 @@
+RewriteEngine on
+
+RewriteRule ^page/([0-9]+)$ index.php?curPage=$1 [NC,L]
+
+RewriteRule ^(categories|contact|search_results|session_expired)$ $1.php [NC,L]
+
+RewriteRule ^category/([0-9]+)/([0-9a-zA-Z_-]+)$ category.php?catid=$1&catname=$2 [NC,L]
+
+RewriteRule ^author_posts/([0-9]+)/([0-9a-zA-Z_-]+)$ author_posts.php?authuid=$1&authname=$2 [NC,L]
+
+RewriteRule ^post/([0-9]+)/([0-9a-zA-Z_-]+)$ post.php?postid=$1&title=$2 [NC,L]
+
+RewriteRule ^post/featured/([0-9]+)/([0-9a-zA-Z_-]+)$ post.php?feat=true&postid=$1&title=$2 [NC,L]
+
+RewriteRule ^forgot_password/([0-9a-zA-Z_-]+)$ forgot_password.php?tempid=$1 [NC,L]
+
+RewriteRule ^thank_you/([0-9a-zA-Z_-]+)$ thank_you.php?tempid=$1 [NC,L]
+
+RewriteRule ^welcome_new_member/([0-9a-zA-Z_-]+)/([0-9a-zA-Z_-]+)$ new_member.php?tempid=$1&uname=$2 [NC,L]
+
+# RewriteRule ^reset_password/([0-9a-zA-Z_-]+)/([0-9a-zA-Z_-]+)$ reset_password.php?email=$1&token=$2 [NC,L]

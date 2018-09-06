@@ -1,0 +1,4 @@
+Use composer to install PHPMailer and create a composer.json (mini_blog root)
+
+after adding autoload to composer.json, remember to run "composer dump-autoload -o" in the terminal
+

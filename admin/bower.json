@@ -1,0 +1,28 @@
+{
+  "name": "cms",
+  "authors": [
+    "Beshara <beshub777@gmail.com>"
+  ],
+  "description": "A PHP blog CMS",
+  "main": "index.php",
+  "keywords": [
+    "PHP",
+    "blog",
+    "portfolio",
+    "project"
+  ],
+  "license": "MIT",
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "^3.3.7",
+    "font-awesome": "^4.6.3"
+  },
+  "private": true
+}

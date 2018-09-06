@@ -1,0 +1,96 @@
+Random welcome section image:
+- What do I want?
+I want to upload images to a directory and save their filenames in the welcome table.
+I want a random image from the directory to show everytime the page is refreshed.
+I want to be able to set the first image a new image or an image that already exists (from a list) 
+
+- What do I need?
+I need to count how many image files are in the directory so I know how many times to loop through the images and assign a random number.
+I need to get the filename of each image file to use it to build the path to the actual file in the directory.
+
+This will all be done through updating rather than inserting.
+
+
+** Maybe the first time is an insert and then following, then the following will be updates **
+
+** If the user chooses to use one image, without using random images, if the name of a select element is set, delete all images from the table, and insert that image?? **
+
+=============================================================================================================================================
+
+var items = [];
+  $('.carousel[data-type="multi"] .item').each(function(n) {
+      items[n] = $(this);
+  });
+                                               
+  // console.log(items.length);
+    
+  $('.carousel[data-type="multi"] .item').each(function() {    
+    var itemToClone = $(this); // gets the .item and saves it to a variable    
+//      for (var i=1;i<4;i++) {
+    for (var i=1;i<items.length;i++) {
+      // Need to clone each .item to create the appearance of each item looping around; this gets the next .item and clones it, so 
+      // the clone doesn't appear until after the number of elements in the items array, e.g. if there are 6 elements in items, the clone
+      // appears after 6 .item elements have passed by
+      itemToClone = itemToClone.next();
+
+      // wrap around if at end of item collection
+      if (!itemToClone.length) {
+        // if at the end, start from the first
+        itemToClone = $(this).siblings(':first');
+      }
+
+      // grab item, clone, add marker class, add to collection
+      // this is where the cloning is done
+      itemToClone.children(':first-child').clone() // grabs the first .item (itemToClone) and clones it
+        .addClass("cloneditem-"+(i)) // adds css class .cloneditem-1, .cloneditem-2, .cloneditem-3, display: none
+        .appendTo($(this));
+    }
+  });
+
+
+Search by post title, post author, or category (single search term at a time)
+
+"SELECT * FROM posts WHERE title LIKE '%" . $searchterm . "%'"; (must join cats)
+
+elseif doesn't exist
+
+"SELECT * FROM posts WHERE category LIKE '%" . $searchterm . "%'"; (must join cats)
+
+elseif doesn't exist
+
+"SELECT * FROM posts WHERE post_auth LIKE '%" . $searchterm . "%'"; (must join cats)
+
+else there are no results
+
+===================================================================================================================================
+
+My attempt to invoking the modal when an item is deleted through the post method (submitting); using categories as an example:
+
+
+OBTAIN THE ID OF THE ITEM TO DELETE AND SET UP THE MODAL:
+
+
+- remove the form with input element for deleting items from categories.php, this will be added to the modal 
+
+- in categories.php, there is a delete link for each item; this link will make a GET request to the page with the cat_id, for example:
+
+    <td><a class="delete-item" href="categories.php?cat_id='<?php echo $cat_id ?>'>DELETE</a></td>
+    
+** also, via JS, a click event is added to the link, which invokes the modal **
+
+    $(".delete-item").on('click', function() {
+        $("#deleteModal").modal('show');
+    });
+    
+
+MAKE THE DELETION:
+
+
+- inside the modal, the code checks for the GET request containing the cat_id and saves its value in variable
+
+- the delete input button inside the modal makes a POST request using the name "delete"
+
+- if the $_POST request is made, a delete query is ran using the cat_id value from the GET request
+
+- the cancel input simply redirects to the categories page via header() 
+  (or leave the current cancel button as is in the modal, which simply dismisses it??, might be good to redirect anyway so cat_id isn't showing in the URL)

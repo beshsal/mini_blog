@@ -1,0 +1,30 @@
+{
+  "name": "mini_blog",
+  "authors": [
+    "Beshara <beshub777@gmail.com>"
+  ],
+  "description": "A PHP blog CMS",
+  "main": "index.php",
+  "keywords": [
+    "PHP",
+    "blog",
+    "portfolio",
+    "project"
+  ],
+  "license": "MIT",
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "^3.3.7",
+    "font-awesome": "^4.6.3",
+    "isotope": "^3.0.1",
+    "jquery-ui": "^1.12.1"
+  },
+  "private": true
+}

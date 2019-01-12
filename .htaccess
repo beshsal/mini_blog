@@ -2,7 +2,13 @@ RewriteEngine on
 
 RewriteRule ^page/([0-9]+)$ index.php?curPage=$1 [NC,L]
 
-RewriteRule ^(categories|contact|search_results|session_expired)$ $1.php [NC,L]
+# RewriteRule ^(categories|contact|search_results|session_expired)$ $1.php [NC,L]
+
+RewriteRule ^(categories|contact|session_expired)$ $1.php [NC,L]
+
+RewriteRule ^search_results/$ search_results.php [NC,L]
+
+RewriteRule ^search_results/([0-9a-zA-Z_-]+)$ search_results.php?searchterm=$1 [NC,L]
 
 RewriteRule ^category/([0-9]+)/([0-9a-zA-Z_-]+)$ category.php?catid=$1&catname=$2 [NC,L]
 
@@ -17,5 +23,3 @@ RewriteRule ^forgot_password/([0-9a-zA-Z_-]+)$ forgot_password.php?tempid=$1 [NC
 RewriteRule ^thank_you/([0-9a-zA-Z_-]+)$ thank_you.php?tempid=$1 [NC,L]
 
 RewriteRule ^welcome_new_member/([0-9a-zA-Z_-]+)/([0-9a-zA-Z_-]+)$ new_member.php?tempid=$1&uname=$2 [NC,L]
-
-# RewriteRule ^reset_password/([0-9a-zA-Z_-]+)/([0-9a-zA-Z_-]+)$ reset_password.php?email=$1&token=$2 [NC,L]

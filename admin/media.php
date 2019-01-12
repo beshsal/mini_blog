@@ -1,4 +1,8 @@
-<?php include "includes/admin_header.inc.php"; ?>
+<?php
+// This page will eventually be the hub for uploading all images rather than uploading images directly from insert_post.php.
+
+include "includes/admin_header.inc.php"; 
+?>
 <div id="wrapper">
     <?php 
     include "includes/admin_nav.inc.php"; 
@@ -10,10 +14,10 @@
                 <div class="col-lg-12">
                     <?php echo "<h1 class='text-center'>This page is currently under construction.</h1>"; ?>
                 </div>
-            </div><!-- /.row -->
-        </div><!-- /.container-fluid -->
+            </div> <!-- /.row -->
+        </div> <!-- /.container-fluid -->
     </div>
-</div><!-- /#wrapper -->
+</div> <!-- /#wrapper -->
 
 <!-- FOOTER -->
 <?php include "includes/admin_footer.inc.php"; ?>

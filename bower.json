@@ -24,7 +24,8 @@
     "bootstrap": "^3.3.7",
     "font-awesome": "^4.6.3",
     "isotope": "^3.0.1",
-    "jquery-ui": "^1.12.1"
+    "jquery-ui": "^1.12.1",
+    "imagesloaded": "^4.1.4"
   },
   "private": true
 }

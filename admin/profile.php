@@ -1,6 +1,7 @@
 <?php
 include "includes/admin_header.inc.php";
 
+// If there is a record in the auth_profile table for the user, get the user's data from the auth_profile.
 $currUname      = $_SESSION["username"];
 $currRole       = $_SESSION["role"];
 $getProfileData = "SELECT * FROM auth_profile WHERE username = '{$currUname}'";
@@ -20,8 +21,10 @@ if ($profileData->num_rows != 0) {
         $total_posts = countRecords('posts', '', '', '', $user_id);       
         $uimg_id     = $row["image_id"];
     }
+// Otherwise, set default values for fields in the auth_profile, and get the user's details from the users table. The default values
+// will be used to determine if a record must be inserted or updated in auth_profile table (see update_profile.php).
 } else {
-    $auth_id     = 0;    
+    $auth_id     = 0;   
     $bio         = "";
     $total_posts = 0;    
     $userData    = $conn->query("SELECT * FROM users WHERE username = '{$currUname}'");
@@ -53,23 +56,36 @@ if ($profileData->num_rows != 0) {
                             <div class="row">
                                 <div class="col-md-6">
                                     <?php
+                                    // Get the filename of the user's image, and use it to display the image. If there is no image,
+                                    // display the default user image.
                                     $getFilename = "SELECT filename FROM user_images WHERE image_id = {$uimg_id}";
                                     $result      = $conn->query($getFilename); confirmQuery($result);
                                     $row         = $result->fetch_array();
                                     $filename    = $row["filename"];
                                     
-                                    echo "<a href='update_profile.php?aid={$auth_id}&uid={$user_id}&img={$uimg_id}'>";
-                                    if (isset($filename) && !empty($filename)) {
-                                        echo
-                                        "<img src='images/user_images/{$filename}' class='img-responsive img-circle' alt='Profile Image' height='180' width='180'>";
-                                    } else {
-                                        echo 
-                                        "<img src='images/user_images/defaultuser.png' class='img-responsive img-circle' alt='Profile Image' height='180' width='180'>";
-                                    } 
+                                    echo "<a href='update_profile.php?aid={$auth_id}&uid={$user_id}&img={$uimg_id}' alt='Profile Image'>";
+                                    if (isset($filename) && !empty($filename)) { ?>
+<!--                               
+                                        <img src='images/user_images/{$filename}' class='img-responsive img-circle' alt='Profile Image' height='180' width='180'>
+-->
+                                        <div class="user-thumb lg"
+                                             style="background-image: url('images/user_images/<?php echo $filename; ?>')">
+                                        </div>
+                                    <?php 
+                                    } else { ?>
+<!--                           
+                                        <img src='images/user_images/defaultuser.png' class='img-responsive img-circle' alt='Profile Image' height='180' width='180'>
+-->
+                                        <div class="user-thumb lg"
+                                             style="background-image: url('images/user_images/defaultuser.png')">
+                                        </div>
+                                    <?php
+                                    }
                                     echo "</a>";
                                     ?>                                     
                                 </div>
                                 <div class="col-md-6">
+                                  <!-- Display the user's profile info in a table - role, name, email, username, and number of posts -->
                                   <table class="">
                                     <tbody>
                                       <tr>
@@ -147,8 +163,10 @@ if ($profileData->num_rows != 0) {
                                     <p>Add posts. View and edit your own posts. View and edit your profile bio and image.</p>
                                     
                                     <h4><?php echo $firstname; ?>'s Bio</h4>
-                                    <p><small><strong>(This will be displayed on your post pages)</strong></small></p>
+                                    <p><small><strong>(This will be displayed on your post pages.)</strong></small></p>
                                 <?php
+                                // If the user has added a bio, display it; otherwise request that the user adds a bio before
+                                // publishing posts.
                                 if (isset($bio) && !empty($bio)) {
                                     echo "<p class='bio'>" . $bio . "</p>";
                                 } else {
@@ -162,8 +180,9 @@ if ($profileData->num_rows != 0) {
                                 <div class="col-xs-12 text-center">
                                     <ul class="list-inline">
                                     <?php
+                                    // Link to the update_profile page
                                     echo "<li>
-                                         <a href='update_profile.php?aid={$auth_id}&uid={$user_id}&img={$uimg_id}' class='btn standard-btn'>
+                                         <a href='update_profile.php?aid={$auth_id}&uid={$user_id}&img={$uimg_id}&fname={$filename}' class='btn standard-btn'>
                                          UPDATE PROFILE</a>
                                          </li>";
                                     ?>

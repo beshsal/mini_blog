@@ -4,14 +4,13 @@ ini_set('display_errors', 1); error_reporting(E_ALL);
 ob_start();
 session_start();
 
-// Constant for current PHP page
+// Constant for the current page
 define("THIS_PAGE", basename($_SERVER["SCRIPT_FILENAME"]));
-// echo THIS_PAGE;
 
-// Constant for base directory
+// Constant for the base directory
 define("BASE_DIR", realpath(dirname(__DIR__)));
 
-// Constant for base URL
+// Constant for the base URL
 define("BASE_URL", "http://" . $_SERVER['SERVER_NAME'] . dirname($_SERVER['PHP_SELF']) . "/");
 
 // ACCESS CONTROL
@@ -46,13 +45,12 @@ require_once(BASE_DIR . "/includes/session_timeout.inc.php");
 
         <!-- Custom styles -->
         <link href="css/sb-admin.css" rel="stylesheet">
-        <link href="css/style.css" rel="stylesheet"> 
 
         <!-- Fonts -->
         <link href="bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css?family=Ledger|Playfair+Display|Poiret+One|Raleway|Roboto|Roboto+Condensed" rel="stylesheet">
         
-         <script src="bower_components/jquery/dist/jquery.min.js"></script> 
+        <!-- <script src="bower_components/jquery/dist/jquery.min.js"></script> -->
         
         <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
         <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -73,4 +71,3 @@ require_once(BASE_DIR . "/includes/session_timeout.inc.php");
         </script>
 -->
     </head>
-    <body>

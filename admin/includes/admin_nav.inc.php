@@ -37,10 +37,8 @@ $currRole = $_SESSION["role"];
     <div class="collapse navbar-collapse navbar-ex1-collapse">
         <ul class="nav navbar-nav side-nav">
             <li class="member-info">
-                <ul class="list-unstyled">
-                    <li>Members Online: <span class="onlinemembers"></span></li>
-                </ul>
-            </li>            
+                <a href="users.php?source=view_members&online=members">Members Online: <span class="onlinemembers"></span></a>
+            </li>
             <li>
                 <a href="javascript:;" data-toggle="collapse" data-target="#posts"><i class="fa fa-file-text" aria-hidden="true"></i> Posts 
                 <i class="fa fa-fw fa-caret-down"></i></a>
@@ -49,7 +47,15 @@ $currRole = $_SESSION["role"];
                         <a href="posts.php?source=insert_post">Add Post</a>
                     </li>
                     <li>
-                        <a href="posts.php">View Posts</a>
+                        <a href="posts.php">View All Posts</a>
+                    </li>
+                    <li>
+                        <a href="
+                        <?php if ($currRole == 'admin') {
+                        echo 'posts.php?user=' . $currUname; // use $_SESSION['username'] in the remote file
+                        } else {
+                        echo 'authuser_posts.php';
+                        } ?>">View Your Posts</a>
                     </li>
                 </ul>
             </li>
@@ -81,9 +87,14 @@ $currRole = $_SESSION["role"];
                     <?php }                
                     if ($currRole == "admin") { ?>                    
                     <li>
-                        <a href="users.php">View Users</a>
+                        <a href="users.php">View All Users</a>
                     </li>
-                    <?php } ?>
+                    <?php }                    
+                    if ($currRole == "admin") { ?>
+                    <li>  
+                        <a href="users.php?role=member&lmt=1">View Members</a>
+                    </li>
+                    <?php } ?>                    
                 </ul>
             </li>
             <?php } ?>

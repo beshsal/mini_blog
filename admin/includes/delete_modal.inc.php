@@ -14,6 +14,7 @@ $pageName = basename(THIS_PAGE, ".php");
       <div class="modal-body">
         <h3 class="text-center">This
         <?php
+            // Customize the delete modal's message for the respective page.
             if ($pageName == "posts") {
                 echo "post";
             } elseif ($pageName == "categories") {                

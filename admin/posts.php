@@ -8,6 +8,7 @@
         <div class="container-fluid">            
             <div class="row">
                 <div class="col-lg-12">
+                <!-- Get the appropriate page template specified by a GET request. -->
                 <?php
                 if(isset($_GET["source"])){
                     $source = $_GET["source"];
@@ -15,6 +16,7 @@
                     $source = "";
                 }
                     
+                // Note when posts.php is accessed without parameters, the view_posts page inserted by default.    
                 switch($source) {
                     case "insert_post";
                     include "insert_post.php";                            

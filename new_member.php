@@ -1,4 +1,6 @@
 <?php
+// This is the page the user is redirected to upon successful registration.
+
 include "includes/html_head.inc.php";
 
 if (isset($_SESSION["authenticated"])) {
@@ -6,6 +8,8 @@ if (isset($_SESSION["authenticated"])) {
     exit;
 }
 
+// A temporary ID is only used to make it harder for a viewer to access the new_member page through the URL.
+// If the URL does not contain a "tempid" value, the viewer is redirected to the home page.
 if (!isset($_GET["tempid"])) {
     header("Location: " . BASE_URL);
     exit;
@@ -23,6 +27,7 @@ include_once "includes/signin.inc.php";
       <h2 style="margin-bottom: 10px;">Welcome</h2>
       <p>( Thank you for joining
       <?php
+      // The message displays the logo text stored in the LOGO_UNSTYLED constant.
       echo "<strong>" . LOGO_UNSTYLED . "</strong>";
       ?>.
       You may now sign in. )

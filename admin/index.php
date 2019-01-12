@@ -2,15 +2,18 @@
 // HEADER
 include "includes/admin_header.inc.php";
 
+// Get the current admin/author's details.
 $currAuthname = $_SESSION["firstname"] . " " . $_SESSION["lastname"];
 $currRole     = $_SESSION["role"];
 $currUname    = $_SESSION["username"];
 
-// Using auth_profile instead of users in case I decide to create a separate members table
+// Get the current admin/author's user_id.
+// Using the auth_profile table instead of users in case I decide to create a separate members table.
 $authuidResult = $conn->query("SELECT user_id FROM auth_profile WHERE username = '{$currUname}'"); confirmQuery($authuidResult);
 $row           = $authuidResult->fetch_array();
 $auth_uid      = $row["user_id"];
 ?>
+<body>
 <div id="wrapper">
     <?php 
     // NAVIGATION
@@ -20,6 +23,7 @@ $auth_uid      = $row["user_id"];
     ?>
     <div id="page-wrapper">
         <div class="container-fluid">
+            <!-- Display the panels containing the number of posts, users, comments, etc. -->
             <div class="row <?php if($currRole == 'author'){ echo 'panel-container';}else{echo 'panel-container-admin';} ?>">
                 <?php if ($currRole == "admin") { ?>
                 <div class="col-lg-3 col-sm-4 col-xs-6">
@@ -33,8 +37,9 @@ $auth_uid      = $row["user_id"];
                                 <div class="col-xs-3">
                                     <i class="fa fa-file-text fa-4x"></i>
                                 </div>
-                                <div class="col-xs-9 text-right"> 
-                                 <div class="huge"><?php echo $totalPosts = countRecords("posts"); ?></div>
+                                <div class="col-xs-9 text-right">
+                                    <!-- Display the total count of all posts. -->
+                                    <div class="huge"><?php echo $totalPosts = countRecords("posts"); ?></div>
                                 </div>
                                 <div class="col-xs-12">All Posts</div>
                             </div>
@@ -52,8 +57,9 @@ $auth_uid      = $row["user_id"];
                                     <i class="fa fa-file-text fa-4x"></i>
                                 </div>
                                 <div class="col-xs-9 text-right"> 
-                                 <div class="huge">
-                                 <?php echo $publishedPosts = countRecords("posts", "post_status", "", "published", ""); ?>
+                                    <div class="huge">
+                                    <!-- Display the total count of published posts. -->
+                                    <?php echo $publishedPosts = countRecords("posts", "post_status", "", "published", ""); ?>
                                 </div>
                                 </div>
                                 <div class="col-xs-12">Published Posts</div>
@@ -71,9 +77,10 @@ $auth_uid      = $row["user_id"];
                                     <i class="fa fa-file-text-o fa-4x"></i>
                                 </div>
                                 <div class="col-xs-9 text-right"> 
-                                 <div class="huge">
-                                 <?php echo $pendingPosts = countRecords("posts", "post_status", "", "draft", ""); ?>
-                                 </div>
+                                    <div class="huge">
+                                    <!-- Display the total count of post drafts. -->
+                                    <?php echo $pendingPosts = countRecords("posts", "post_status", "", "draft", ""); ?>
+                                    </div>
                                 </div>
                                 <div class="col-xs-12">Pending Posts</div>
                             </div>
@@ -87,6 +94,8 @@ $auth_uid      = $row["user_id"];
                 <?php } else { ?>
                 <div class="col-lg-4 col-xs-6">
                 <?php } ?>
+                    <!-- Specific admin/author owned posts - if an admin, access the posts through a GET request to the
+                     posts page; if an author, go to the authuser_posts page. -->
                     <?php if ($currRole == "author") { ?>
                     <a href="authuser_posts.php">
                     <?php } else { ?>
@@ -99,10 +108,12 @@ $auth_uid      = $row["user_id"];
                                     <i class="fa fa-file-text fa-4x"></i>
                                 </div>
                                 <div class="col-xs-9 text-right">
-                                 <div class="huge">
-                                 <?php echo $authorPosts = countRecords("posts", "", "", "", $auth_uid); ?>
+                                    <div class="huge">
+                                    <!-- Display the count of the admin's/author's post. -->
+                                    <?php echo $authorPosts = countRecords("posts", "", "", "", $auth_uid); ?>
                                  </div>
                                 </div>
+                                <!-- Specify the admin's/author's name. -->
                                 <div class="col-xs-12"><?php echo $_SESSION["firstname"]; ?>'s Posts</div>
                             </div>
                         </div>                       
@@ -122,6 +133,7 @@ $auth_uid      = $row["user_id"];
                                     <i class="fa fa-th fa-4x"></i>
                                 </div>
                                 <div class="col-xs-9 text-right">
+                                    <!-- Display the total count of categories. -->
                                     <div class="huge"><?php echo $totalCats = countRecords("categories"); ?></div>
                                 </div>
                                 <div class="col-xs-12">Categories</div>
@@ -143,15 +155,18 @@ $auth_uid      = $row["user_id"];
                                     <i class="fa fa-comments fa-4x"></i>
                                 </div>
                                 <div class="col-xs-9 text-right">
-                                     <div class="huge">
-                                     <?php
-                                     if ($currRole == "author") {
+                                    <div class="huge">
+                                    <!-- Display the count of comments. -->
+                                    <?php
+                                    // If an admin, show the total count of comments. If an author, only show the count of comments
+                                    // assigned to the author's posts.
+                                    if ($currRole == "author") {
                                         echo $totalComments = countRecords("comments", "", "", "", $auth_uid);
-                                     } else {
+                                    } else {
                                         echo $totalComments = countRecords("comments");
-                                     }
-                                     ?>
-                                     </div>                                  
+                                    }
+                                    ?>
+                                    </div>                                  
                                 </div>
                                 <div class="col-xs-12">Comments</div>
                             </div>
@@ -174,6 +189,8 @@ $auth_uid      = $row["user_id"];
                                 <div class="col-xs-9 text-right">
                                     <div class="huge">
                                     <?php 
+                                    // If an admin, show the total count of unapproved comments. If an author, only show the count of
+                                    // unapproved comments assigned to the author's posts.
                                     if ($currRole == "author") {
                                         echo $pendingComments = countRecords("comments", "comment_status", "", "unapproved", $auth_uid);
                                     } else {
@@ -193,10 +210,12 @@ $auth_uid      = $row["user_id"];
                 <?php } else { ?>
                 <div class="col-lg-4 col-xs-6">
                 <?php }
+                // Admin are given access to deleting and editing users directly on the view_users template. Authors only
+                // have access to viewing members via the view_members template.
                 if ($currRole == "author") { ?>
                     <a href="users.php?source=view_members">
                 <?php } else { ?>
-                    <a href="users.php?role=member">
+                    <a href="users.php?role=member&lmt=1">
                 <?php } ?>
                     <div class="panel">
                         <div class="panel-heading">
@@ -205,6 +224,7 @@ $auth_uid      = $row["user_id"];
                                     <i class="fa fa-users fa-4x"></i>
                                 </div>
                                 <div class="col-xs-9 text-right">
+                                    <!-- Display the total count of members. -->
                                     <div class="huge"><?php echo $totalMembers = countRecords("users", "", "member", "", ""); ?></div>
                                 </div>
                                 <div class="col-xs-12">Members</div>

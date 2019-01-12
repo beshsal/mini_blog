@@ -1,25 +1,17 @@
 <?php
 include "includes/html_head.inc.php";
 
-if (isset($_SESSION["authenticated"])) {
+// If the user is signed in or a token value is not in the URL query string, 
+// redirect the user to the home page.
+if (isset($_SESSION["authenticated"]) || !isset($_GET["token"])) {    
     header("Location: " . BASE_URL);
-    exit;
-}
-
-if(!isset($_GET["email"])) {
-    header("Location: " . BASE_URL);
-    exit;
-}
-
-if (isset($_GET["pwdreset"])) {
-    $pwdReset = $_GET["pwdreset"];
     exit;
 }
 
 require "./vendor/autoload.php"; // loads ValidatePwd class
 
-// Use the token value passed in through the URL query string to select the current user's
-// username, email, and token from the database
+// Use the token value passed in through the URL query string to select the exact current user's
+// username, email, and token from the database.
 if ($stmt = $conn->prepare("SELECT username, email, token FROM users WHERE token = ?")) {
     $stmt->bind_param("s", $_GET["token"]);
     $stmt->execute();
@@ -28,34 +20,40 @@ if ($stmt = $conn->prepare("SELECT username, email, token FROM users WHERE token
     $stmt->close();    
 }
 
+// If a POST request is made and it contains the value of the input submit field
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST["reset_pwd"])) {
-    $errors = array(); // create an array for holding errors
+    // Create an array for holding errors.
+    $pwdErrors = array(); 
     
+    // If the required password fields are submitted, save their values.
     if (isset($_POST["pwd"]) && isset($_POST["conf_pwd"])) {
         $password   = trim($_POST['pwd']);
-        $confirmPwd = trim($_POST["conf_pwd"]);        
+        $confirmPwd = trim($_POST["conf_pwd"]);
     } else {
-        $errors[] = "Fields must not be empty";
+        $pwdErrors[] = "Fields must not be empty.";
     }
     
     if ($password != $confirmPwd) {
-        $errors[] = "Your passwords do not match.";
+        $pwdErrors[] = "Your passwords do not match.";
     }
     
-    // Validate the password
+    // Validate the password.
     $validatePwd = new ValidatePwd($password, 10);
     $validatePwd->requireMixedCase(); // check that uppercase and lowercase characters are used
     $validatePwd->requireNumbers(2); // check that at least 2 numbers are used
     $passwordOK = $validatePwd->check();
-
-    if (!$passwordOK) { 
-      $errors = array_merge($errors, $validatePwd->getErrors());
+    
+    // If the password does not pass validation, merge any errors in the $pwdErrors array with the validation
+    // errors.
+    if (!$passwordOK) {
+        $pwdErrors = array_merge($pwdErrors, $validatePwd->getErrors());
     }
-
-    if (!$errors) {   
+    // If $pwdErrors doesn't contain values, there are no errors, so update the password for the respective record
+    // in the users table.
+    if (!$pwdErrors) {   
         $salt = time();
         $pwd = sha1($password . $salt);
-        // Note: removing the token because it is not needed after the update
+        // (Note: removing the token because it is not needed after the update)
         if (!($stmt = $conn->prepare("UPDATE users SET token='', password= ?, salt = ? WHERE email = ?"))) {
             echo "Prepare failed: (" . $conn->errno . ") " . $conn->error;
         }
@@ -69,10 +67,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST["reset_pwd"])) {
         }
 
         if($stmt->affected_rows == 1) {
-            header("Location:" . $_SERVER["PHP_SELF"] . "?email=" . $_GET["email"] . "&pwdreset=true");
-            exit;
+            // If the password was successfully reset, set a flag on the session.
+            $_SESSION["pwdreset"] = true;
+            // Refresh the page.
+            header("Location:" . $_SERVER["PHP_SELF"] . "?username=" . $username . "&email=" . $email . "&token=" . $token. "&pwdreset=true");
+            exit;          
         } else {
-            $errors[] = "Sorry, there was a problem with the database.";
+            $pwdErrors[] = "Sorry, there was a problem with the database.";
         }
 
         $stmt->close();
@@ -84,27 +85,45 @@ include "includes/breadcrumb.inc.php";
 ?>
 <main class="page-content container">
     <section id="forgot-pwd">
-    <header class="section-heading">
-    <h2 style="margin-bottom: 10px;">
-    <?php if (isset($pwdReset)) {
-        echo "Your Password was Reset";
-    } else {
-        echo "Reset Your Password";
-    } ?>
-    </h2>
-    <!-- <p>( No problem. You can reset your password here. )</p> -->
-    </header>
-        <?php if (isset($pwdReset)) { ?>
+        <header class="section-heading">
+        <h2 style="margin-bottom: 10px;">
+        <?php if (isset($_SESSION["pwdreset"])) {
+            echo "Your Password was Reset";
+        } else {
+            echo "Reset Your Password";
+        } ?>
+        </h2>
+        </header>
+        <div>
+        <?php
+        // If there are errors, display them.
+        if (isset($pwdErrors)) {
+            if (count($pwdErrors) > 1) {
+                echo "<ul class='error' style='margin-bottom:15px;'>";
+                foreach ($pwdErrors as $err) {
+                   echo "<li><h3>$err</h3></li>";
+                }
+                echo "</ul>";
+            } elseif (count($pwdErrors) == 1) {
+                echo "<h3 class='text-center error' style='margin-bottom:15px;'>$pwdErrors[0]</h3>";
+            }    
+        }
+        ?>
+        </div>
+        <!-- If $_SESSION["pwdreset"] is set, indicating the password has been successfully reset, display the sign-in form; 
+        otherwise, display the form that resets the password. -->
+        <?php if (isset($_SESSION["pwdreset"]) && $_SESSION["pwdreset"] == true) {
+        ?>
         <div class="row">
             <h4 class="text-center">Sign in with your new password:</h4>
             <form action="" method="post">
                 <div class="form-group">
                   <label for="username">Username:</label>
-                  <input name="uname" type="text" class="form-control" id="uname" placeholder="Enter Username">
+                  <input name="uname" value="<?php if(isset($_GET['username'])) echo $_GET['username']; ?>" type="text" class="form-control" id="uname" placeholder="Enter Username" required>
                 </div>
                 <div class="form-group">
                   <label for="password">Password:</label>
-                  <input name="pwd" type="password" class="form-control" id="pwd" placeholder="Enter password">
+                  <input name="pwd" type="password" class="form-control" id="pwd" placeholder="Enter password" required>
                 </div>
                 <button name="sign_in" type="submit" class="btn standard-btn">SIGN IN</button>
             </form>
@@ -120,13 +139,13 @@ include "includes/breadcrumb.inc.php";
                             <div class="form-group">
                                 <div class="input-group">
                                     <span class="input-group-addon"><i class="fa fa-user"></i></span>
-                                    <input id="password" name="pwd" placeholder="Enter password" class="form-control"  type="password">
+                                    <input id="password" name="pwd" placeholder="Enter new password" class="form-control"  type="password">
                                 </div>
                             </div>
                             <div class="form-group">
                                 <div class="input-group">
                                     <span class="input-group-addon"><i class="fa fa-check"></i></span>
-                                    <input id="confirmPassword" name="conf_pwd" placeholder="Confirm password" class="form-control"  type="password">
+                                    <input id="confirmPassword" name="conf_pwd" placeholder="Confirm new password" class="form-control"  type="password">
                                 </div>
                             </div>
                             <div class="form-group">

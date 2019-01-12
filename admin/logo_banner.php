@@ -6,7 +6,7 @@ include "includes/admin_header.inc.php";
 include "includes/admin_nav.inc.php";
 include "includes/page_header.inc.php";
     
-// If the welcome table is empty, insert a record with a default greeting
+// If the welcome table is empty, insert a record with a default greeting.
 $customHeading   = "";
 $customGreeting  = "";
 $defaultGreeting = $conn->real_escape_string("<p>Simplicity is nature's first step, and the last of art.<br><small>&#8212; Philip James Bailey</small></p>");
@@ -15,9 +15,7 @@ $defaultHeading  = "";
 $checkWelcome = $conn->query("SELECT * FROM welcome");
 confirmQuery($checkWelcome);
 
-// If the table is empty, insert default data
-if ($checkWelcome->num_rows == 0) {
-    // echo "There are no records.";    
+if ($checkWelcome->num_rows == 0) {    
     $insertDefaults = $conn->query("INSERT INTO welcome (id, heading, greeting, filename) VALUES(1, '{$defaultHeading}', '{$defaultGreeting}', '')");
     confirmQuery($insertDefaults);
 } else {
@@ -32,15 +30,15 @@ if ($checkWelcome->num_rows == 0) {
 // Logo queries
 $defaultLogo = $conn->query("SELECT * FROM logo");
 confirmQuery($defaultLogo);   
-// If the logo table is empty, insert a default logo record; else select the current records
+// If the logo table is empty, insert a default logo record; else select the current record.
 if ($defaultLogo->num_rows == 0) {
-   $logo         = "Logo";
+    $logo        = "Logo";
     $logo_multi1 = "";
     $logo_multi2 = ""; 
     $result = $conn->query("INSERT INTO logo (id, logo, logo_multi1, logo_multi2) VALUES(1,'{$logo}', '{$logo_multi1}', '{$logo_multi2}')");    
     confirmQuery($result);
 } else {
-    //  Get the logo
+    //  Get the logo.
     $logoQuery = "SELECT * FROM logo";
     $result    = $conn->query($logoQuery);
     confirmQuery($result);
@@ -52,40 +50,76 @@ if ($defaultLogo->num_rows == 0) {
     }
 }
 
-// Initialize prepared statement
-// $stmt = $conn->stmt_init();
-    
+// Change the background image.
+// If the form for uploading an image is submitted
 if (isset($_POST["update_image"])) {
-    if($_FILES['image']['error'] == 0) {
-        // $_FILES is the superglobal for uploaded files; it is a multidimensional array (array of arrays)
-        $fname          = $conn->real_escape_string($_FILES['image']['name']);            
-        $image_temp_loc = $_FILES['image']['tmp_name']; // save the temporary location of the uploaded file
-
-        // move_uploaded_file() tells where to move the temporary file
-        // parameters - name of temporary file, where to move it 
-        move_uploaded_file($image_temp_loc, "images/welcome_images/{$fname}");
-
-        if (!isset($id)) {
-            // Insert the filename into the filename column in the posts table;
-            // changed post_author to post_user
-            $query = "INSERT INTO welcome (filename)      
-                     VALUES('{$fname}')";
-        } else {
-            $query = "UPDATE welcome SET filename = '{$fname}'
-                     WHERE id = {$id}";
-        }
-        // Run the query
-        $result = $conn->query($query);
-        // Confirm that is was successful  
-        confirmQuery($result);
-        header("Location: logo_banner.php");
-        exit;
+    // If the input field is sent without an uploaded image file, set an error message.
+    if (empty($_FILES['image']['tmp_name']) || !is_uploaded_file($_FILES['image']['tmp_name'])) {
+        $error = "<p class='error'>Please select an image file to upload.</p>";
+    // Otherwise, validate the file, and attempt to upload it.
     } else {
-        $error = "<p class='error'>There is a problem uploading the file.</p>";
+        // Set a flag to determine if the file is valid.
+        $imageOK = true;
+
+        // Get the filename.
+        // $fname = $conn->real_escape_string($_FILES['image']['name']);
+        $fname = basename($_FILES['image']['name']);
+        
+        // Get the file data.
+        $isImage = getimagesize($_FILES["image"]["tmp_name"]);
+
+        // Get the file extension. 
+        $type = strtolower(pathinfo($fname, PATHINFO_EXTENSION));
+
+        // Set the permitted extensions.
+        $permitted = array('jpg','jpeg','png','gif');
+        
+        // Check if the file is permitted. If not, set an error message.
+
+        // if($type != "jpg" || $type != "jpeg" || $type != "png" || $type != "gif" ) {
+            // $error = "<p class='error'> Only JPG, JPEG, PNG and GIF files may be upload.</p>";
+        // }
+
+        if (!in_array($type, $permitted)) {
+            $imageOK = false;
+            $error = "<p class='error'> Only JPG, JPEG, PNG and GIF files may be upload.</p>";
+        }
+
+        // Check if the file is an image. If not, set an error message.
+        if ($isImage == false) {
+            $imageOK = false;
+            $error = "<p class='error'>Only image files may be uploaded.</p>";
+        } 
+
+        // If the file is valid, attempt to upload it.
+        if ($imageOK) {
+            if (move_uploaded_file($_FILES["image"]["tmp_name"], "images/welcome_images/{$fname}")) {
+                $success = "<p class='success'>The file has been successfully uploaded.</p>";
+
+                // If the file has not been uploaded yet, insert a record for it in the welcome table. Otherwise, update
+                // the current record's filename.
+                if (!isset($id)) {
+                    // Insert the filename into the filename column in the welcome table
+                    $query = "INSERT INTO welcome (filename)      
+                             VALUES('{$fname}')";
+                } else {
+                    $query = "UPDATE welcome SET filename = '{$fname}'
+                             WHERE id = {$id}";
+                }
+                // Run the query.
+                $result = $conn->query($query);
+                // Confirm that is was successful. 
+                confirmQuery($result);
+                header("Location: logo_banner.php");
+                exit;
+            } else {
+                $error = "<p class='error'>There is a problem uploading the file.</p>";
+            }
+        }
     }
 }
  
-// If a greeting already exists, update it
+// If a greeting and heading already exist, update them.
 if (isset($_POST["update_welcome"])) {    
     if (isset($_POST["greeting"])) {
         $customGreeting = $_POST["greeting"]; 
@@ -119,8 +153,9 @@ if (isset($_POST["update_welcome"])) {
     exit;
 }
 
-// If a single logo already exists, update it
-if (isset($_POST["update_logo1"])) {    
+// If a single color logo already exists, update it.
+if (isset($_POST["update_logo1"])) {
+    // The logo_multi1 and logo_multi2 fields will be empty.   
     $logo_multi1 = "";
     $logo_multi2 = "";
 
@@ -130,7 +165,7 @@ if (isset($_POST["update_logo1"])) {
         $logo = "Logo";
     }
 
-    // Update the logo field; logo_multi1 and logo_multi2 will be empty
+    // Update the logo field.
     if (!($stmt = $conn->prepare("UPDATE logo SET logo = ?, logo_multi1 = ?, logo_multi2 = ? WHERE id = ?"))) {
         echo "Prepare failed: (" . $conn->errno . ") " . $conn->error;
     }
@@ -143,7 +178,9 @@ if (isset($_POST["update_logo1"])) {
     $stmt->close();
     header("Location: logo_banner.php");
     exit;
+// Else if a multi-colored logo exists, update it.
 } elseif (isset($_POST["update_logo2"])) {
+    // The single logo field will be empty, and the logo_multi1 and logo_multi2 fields will have values.
     $logo = "";
 
     if (isset($_POST["logo_multi1"]) || isset($_POST["logo_multi2"]) && !empty($_POST["logo_multi1"]) || !empty($_POST["logo_multi2"])) {
@@ -175,21 +212,19 @@ if (isset($_POST["update_logo1"])) {
                 <form class="" action="" method="post" enctype="multipart/form-data">
                     <div class="row">
                         <div class="form-group col-sm-6">
+                            <?php if(isset($error)) echo $error; ?>
                             <label for="image">Upload background image:</label>
                             <input type="file" name="image" class="filestyle" data-buttonName="btn gray-btn" data-buttonText="Choose Image" data-icon="false" data-badge="false" data-placeholder="No image added" data-size="md">
                         </div>
                         <div class="form-group col-sm-6" style="postion: relative;">
-                        <?php if (!empty($filename)) {
-                            echo "<img id='post-img-holder' src='images/welcome_images/{$filename}'>";
-                        } else { echo ""; }
-                        ?>
+                        <?php if(!empty($filename)){echo "<img id='post-img-holder' src='images/welcome_images/{$filename}'>";}else{echo "";} ?>
                         </div>
                     </div>
                     <div class="form-group">
                         <input class="btn standard-btn" type="submit" name="update_image" value="Update Image">
                     </div>
                 </form>                
-                 <div style="margin-bottom: 5px;"><span style="font-weight:bold;">Logo: </span><span><a id="switchFields" href="#pagetop" style="">Add multicolor logo</a></span></div>                
+                 <div style="margin-bottom: 5px;"><span style="font-weight:bold;">Logo: </span><span><a id="switchFields">Add multi-colored logo</a></span></div>                
                 <form id="form1" class="" action="" method="post" enctype="multipart/form-data">
                     <div id="logo1" class="form-group show">
                         <input id="logo-edit" class="set-logo-color" type="text" name="logo" value="<?php if(isset($logo)){echo $logo;}else{echo '';} ?>";>                    
@@ -206,7 +241,7 @@ if (isset($_POST["update_logo1"])) {
                         <input class="set-logo-color" type="text" name="logo_multi2" value="<?php if(isset($logo_multi2)){echo $logo_multi2;}else{echo '';} ?>">
                     </div>
                     <div class="form-group">
-                        <input class="btn standard-btn" type="submit" name="update_logo2" value="Update">
+                        <input class="btn standard-btn" type="submit" name="update_logo2" value="Update Logo">
                     </div>
                 </form>
                 <form class="" action="" method="post" enctype="multipart/form-data">

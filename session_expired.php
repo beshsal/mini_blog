@@ -1,4 +1,6 @@
 <?php
+// This is the page the user is redirected to when the sign-in session expires.
+
 include "includes/html_head.inc.php";
 include "includes/header.inc.php";
 include "includes/breadcrumb.inc.php";
@@ -18,6 +20,7 @@ include_once "includes/signin.inc.php";
       <h2 style="margin-bottom: 10px;">Session Expired</h2>
       <p>( Thank you for visiting
       <?php 
+      // The message displays the logo text stored in the LOGO_UNSTYLED constant.
       echo "<strong>" . LOGO_UNSTYLED . "</strong>";
       ?>.
       Feel free to sign in again. )

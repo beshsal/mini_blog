@@ -9,14 +9,16 @@ include "includes/admin_header.inc.php";
     <div id="page-wrapper">
         <div class="container-fluid">
             <div class="row">
-                <div class="col-lg-12">                    
+                <div class="col-lg-12">
+                <!-- Get the appropriate page template specified by a GET request. -->                    
                 <?php
                 if(isset($_GET["source"])){
                     $source = $_GET["source"];
                 } else {
                     $source = "";
                 }
-                    
+                
+                // Note when user.php is accessed without parameters, the view_users page inserted by default.   
                 switch($source) {
                     case "insert_user";
                     include "insert_user.php";                            
@@ -39,7 +41,7 @@ include "includes/admin_header.inc.php";
                     break;
                         
                     default:
-                    include "view_users.php";                            
+                    include "view_users.php";                      
                     break;
                 }
                 ?>

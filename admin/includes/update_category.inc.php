@@ -1,12 +1,14 @@
 <?php
+// When the Edit link is clicked, an "update_cat" parameter with the cat_id value is sent through the URL query string.
 if (isset($_GET["update_cat"])) {
+    // Make sure the value is numeric.
     if (!is_numeric($_GET["update_cat"])) {
         header("Location: " . BASE_URL);
         exit;
     } else {
+        // Use the cat_id to select the category to be updated.
         $cat_id = (int) $_GET["update_cat"];
-        // Select the item to be updated
-        $query = "SELECT * FROM categories WHERE cat_id = {$cat_id}";    
+        $query  = "SELECT * FROM categories WHERE cat_id = {$cat_id}";    
         $result = $conn->query($query);
         confirmQuery($result);
     }
@@ -16,9 +18,10 @@ if (isset($_GET["update_cat"])) {
 if (isset($_POST["update_category"])) {
     $category = $_POST["category"];
 
-    // If category field is left blank
+    // If category field is left blank, add an error message to $catError.
     if (!isset($category) || empty($category)) {
         $catError = "<p class='error'>This field should not be empty</p>";
+    // Otherwise update the category.
     } else {
         if (!($stmt = $conn->prepare("UPDATE categories SET category = '{$category}' WHERE cat_id = {$cat_id}"))) {
             echo "Prepare failed: (" . $conn->errno . ") " . $conn->error;
@@ -38,7 +41,9 @@ if (isset($_POST["update_category"])) {
 
 <form action="" method="post">
   <div class="form-group">
-     <label for="cat-title">Edit category:</label>
+     <hr>
+     <span style="float: right; padding-right: 5px;"><a style="color: #000;" href="admin_categories.php">X</a></span>
+     <label for="cat-title">Update category:</label>
     <?php
     while ($row = $result->fetch_assoc()) {
         $cat_id  = $row["cat_id"];

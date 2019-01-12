@@ -5,16 +5,14 @@ date_default_timezone_set("UTC");
 ob_start();
 session_start();
 
-// Constant for current PHP page
+// Constant for the current page
 define("THIS_PAGE", basename($_SERVER["SCRIPT_FILENAME"]));
-// echo THIS_PAGE;
 
-// Constant for base directory
+// Constant for the base directory
 define("BASE_DIR", realpath(dirname(__DIR__)));
 
-// Constant for base URL
+// Constant for the base URL
 define("BASE_URL", "http://" . $_SERVER['SERVER_NAME'] . dirname($_SERVER['PHP_SELF']) . "/");
-// echo BASE_URL;
 
 require_once("includes/db.inc.php");
 include("includes/util_funcs.inc.php");
@@ -24,10 +22,12 @@ include("includes/signout.inc.php");
 include("title.inc.php");
 include("includes/track_members.inc.php");
 
+// Optional timeout script for the session
 if (isset($_SESSION["authenticated"])) {
     require_once(BASE_DIR . "/admin/includes/session_timeout.inc.php");
 }
 
+// Get the background image's filename (used in the in-line styles below).
 $welcomeQuery = "SELECT * FROM welcome";
 $result = $conn->query($welcomeQuery);
 confirmQuery($result);
@@ -35,10 +35,9 @@ while ($row = $result->fetch_assoc()) {
     $filename = $row["filename"];
 }
 
-// Constants for logo
+// Constants for logo (styled and unstyled)
 define("LOGO", outputLogo());
 define("LOGO_UNSTYLED", outputLogo(false));
-
 ?>
 
 <!DOCTYPE html>
@@ -79,6 +78,7 @@ define("LOGO_UNSTYLED", outputLogo(false));
     <![endif]-->
     
     <style>
+    /* Styles for the header's background image */
     #welcome {
         background-color: #000;
         background-image: url(admin/images/welcome_images/<?php echo $filename; ?>);
@@ -107,13 +107,39 @@ define("LOGO_UNSTYLED", outputLogo(false));
 
     @media screen and (max-width: 600px) {
         #welcome {
-            background-image: url(admin/images/welcome_images/<?php echo $filename; ?>);		
+            background-image: url(admin/images/welcome_images/<?php echo $filename; ?>);        
         }
     }
 
     @media only screen and (max-width: 768px) {
-        #welcome {	
-            background-image: url(admin/images/welcome_images/<?php echo $filename; ?>);		
+        #welcome {  
+            background-image: url(admin/images/welcome_images/<?php echo $filename; ?>);        
+        }
+    }
+        
+    /* Styles for the spinning loader */
+    #loader {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        width: 100%;
+        background: rgba(255, 255, 255, 0.95) url(https://media.giphy.com/media/3o84TSvGGfaIor8VzO/giphy.gif) no-repeat center center;
+        z-index: 100000;
+    }
+    
+    #loader span {
+        display: inline-block;
+        margin-top: 50%;
+        font-family: "Roboto", sans-serif;
+        font-size: 1.2em;
+    }
+    
+    @media only screen and (min-width: 768px) {
+        #loader span {
+            margin-top: 20%;
         }
     }
     </style>

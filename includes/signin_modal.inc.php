@@ -17,16 +17,21 @@
         <form action="" method="post">
             <div class="form-group">
               <label for="username">Username:</label>                   
-              <input name="uname" type="text" class="form-control" id="uname" placeholder="Enter Username">
+              <input name="uname" type="text" class="form-control" id="uname" placeholder="Enter Username" required>
             </div>
             <div class="form-group">
               <label for="password">Password:</label>
-              <input name="pwd" type="password" class="form-control" id="pwd" placeholder="Enter password">
+              <input name="pwd" type="password" class="form-control" id="pwd" placeholder="Enter password" required>
             </div>
             <div class="form-group">
               <div class="checkbox">
-                <label class="unavail" data-placement="bottom" data-title="" data-content="THIS FEATURE IS NOT AVAILABLE FOR THIS DEMO.">
-                    <input class="unAvail" type="checkbox"> Remember me
+                <label>
+                <input class="unavail" 
+                       type="checkbox" 
+                       id="remember" 
+                       data-placement="bottom" 
+                       data-title="" 
+                       data-content="THIS FEATURE IS NOT AVAILABLE FOR THIS DEMO."> Remember me
                 </label>
               </div>
             </div>
@@ -35,7 +40,7 @@
           
         <div class="sign-up">
           <span>Not a member?
-            <a onClick="$('#modal-signin').hide(); $('#modal-register').show()">Register here</a>
+            <a onclick="$('#modal-signin').hide(); $('#modal-register').show()">Register here</a>
           </span>
         </div>                                  
       </div>
@@ -54,18 +59,18 @@
         </div>
           
         <!-- REGISTER FORM -->
-        <form action="" method="post">
+        <form action="" method="post" class="reg-form">
             <div class="form-group">
               <label for="firstname">Enter your firstname:</label>
-              <input name="fname" type="text" class="form-control" autocomplete="off" id="fname" placeholder="Firstname" required>
+              <input name="fname" type="text" class="form-control" autocomplete="off" id="fname" placeholder="Firstname">
             </div>
             <div class="form-group">
               <label for="lastname">Enter your lastname:</label>
-              <input type="text" class="form-control" name="lname" autocomplete="off" id="lname" placeholder="Lastname" required>
+              <input type="text" class="form-control" name="lname" autocomplete="off" id="lname" placeholder="Lastname">
             </div>
             <div class="form-group">
               <label for="email">Enter your email:</label>
-              <input name="email" type="email" class="form-control" id="email" placeholder="Email" required>
+              <input name="email" type="email" class="form-control" id="email" placeholder="Email">
             </div>
             <div class="form-group">
               <label for="username">Enter your username:</label>
@@ -76,7 +81,7 @@
                 <small>Username must be at least 6 characters</small>                 
               </div>
               <div class="tooltip reg-guide" style="color: white;">? <span class="tooltiptext">This is a tip</span></div>
-              <input name="uname" type="text" class="form-control" id="uname" placeholder="Username" required>
+              <input name="uname" type="text" class="form-control" id="uname" placeholder="Username">
             </div>            
             <div class="form-group">
               <label for="password">Enter your password:</label>
@@ -91,11 +96,11 @@
                     <li><small>Password should include at least 2 numbers</small></li>
                 </ul>
               </div>
-              <input name="pwd" type="password" class="form-control" id="pwd" placeholder="Password" required>
+              <input name="pwd" type="password" class="form-control" id="pwd" placeholder="Password">
             </div>
             <div class="form-group">
               <label for="password">Re-enter your password:</label>
-              <input name="conf_pwd" type="password" class="form-control" id="pwd" placeholder="Password" required>
+              <input name="conf_pwd" type="password" class="form-control" id="pwd" placeholder="Password">
             </div>
             <input name="role" type="hidden" value="member">
             <button name="register" type="submit" class="btn standard-btn">REGISTER</button>

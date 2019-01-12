@@ -65,14 +65,14 @@ include "includes/breadcrumb.inc.php";
       <?php
       // Display all posts by the specified author or admin.
       while($row = $authPosts->fetch_assoc()) {
-        $post_id       = $row["post_id"];
-        $auth_uid      = $row["auth_uid"];
-        $post_auth     = $row["post_auth"];        
-        $title         = $row["title"];
-        $post_date     = $row["post_date"];
-        $post_image    = "admin/images/post_images/{$row['filename']}";
-        $post_content  = $row["post_content"];
-        $post_views    = $row["post_views"];
+        $post_id      = $row["post_id"];
+        $auth_uid     = $row["auth_uid"];
+        $post_auth    = $row["post_auth"];        
+        $title        = $row["title"];
+        $post_date    = $row["post_date"];
+        $post_image   = "admin/images/post_images/{$row['filename']}";
+        $post_content = $row["post_content"];
+        $post_views   = $row["post_views"];
           
         // Count all approved comment records associated with the posts.
         $getApprvdComments = "SELECT * FROM comments

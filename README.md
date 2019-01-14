@@ -15,10 +15,8 @@ Initial setup
 
 ```
 - Download and copy the mini_blog files to your local server
-
 - Using a MySQL admin tool, such as phpMyAdmin, or a method of your choice, install the mini_blog database 
   (the mini_blog.sql file is located in the database folder)
-
 - Add your database username and password credentials to the db.inc.php file located in the includes folder
 
 ```
@@ -27,9 +25,7 @@ Creating the first admin user
 
 ```
 - Click on the "MENU" button
-
 - Click on the "Register here" link and register a new user (this creates a user with a role of "member")
-
 - Using a MySQL admin tool, such as phpMyAdmin, or a method of your choice, access the users table and 
   change the user's role to "admin"
 
@@ -43,9 +39,7 @@ Setting up the Mailtrap test SMTP server
 
 ```
 - Create a Mailtrap account (https://mailtrap.io/)
-
 - Click on Demo Inbox under My Inboxes
-
 - Add the provided credentials (host, port, username, and password) to the Config.php file located in 
   includes/classes
 

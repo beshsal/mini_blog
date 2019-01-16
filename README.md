@@ -40,8 +40,10 @@ Setting up the Mailtrap test SMTP server
 ```
 - Create a Mailtrap account (https://mailtrap.io/)
 - Click on Demo Inbox under My Inboxes
-- Add the provided credentials (host, port, username, and password) to the Config.php file located in 
+- Add the provided credentials (host, port, username, and password) to the Config.php file located in
   includes/classes
+- Open the processmail_phpmailer.inc.php and process_welcome_mail.inc.php files located in the includes folder
+  and replace all email addresses under Recipients with your email address
 
 ```
 

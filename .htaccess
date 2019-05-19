@@ -1,5 +1,7 @@
 RewriteEngine on
 
+ErrorDocument 404 http://localhost/mini_blog/404.php
+
 RewriteRule ^page/([0-9]+)$ index.php?curPage=$1 [NC,L]
 
 # RewriteRule ^(categories|contact|search_results|session_expired)$ $1.php [NC,L]

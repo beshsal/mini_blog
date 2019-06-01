@@ -50,7 +50,7 @@ if (!$suspect) {
   } elseif (in_array($key, $expected)) {
     // Otherwise, if the field is in the $expected array, assign it to a variable of the same name as $key
       // and set $temp as its value.
-    ${$key} = $temp; // this should have $firstname, $lastname, $email, and $comment, etc, containing respective values
+    ${$key} = $temp; // this should have $first_name, $last_name, $email, and $comment, etc, containing respective values
   }
   }
 }
@@ -101,22 +101,23 @@ if (!$suspect && !$missing && !$issues) {
    // Loop through the $expected array
    // For each element in the $expected array, assign it to a temporary variable called $item.
    foreach($expected as $item) {     
-   // if set and not empty, assign the value of the current item to $val.
-   if (isset(${$item}) && !empty(${$item})) {
-     $val = ${$item}; // values of $name, $email, and so on assigned to $val in each iteration
-   } else { 
-       // Otherwise, if a field has an empty value but is not specified as required, assign "Not provided" as its value.
-     $val = "Not provided";
-   }
-   // If an array, expand as a comma-separated string (e.g. values from multiple choice elements like checkbox groups, <select> lists, 
-     // submitted as sub-arrays of a $_POST array). (not included in this demo)
-   if (is_array($val)) {
-     $val = implode(", ", $val); // subarrays are converted into comma-separated strings (adds ", " between each)
-   }
-     // Replace underscores and hyphens in the key with spaces.
-     $item = str_replace(array('_', '-'), ' ', $item); 
-   // Add a label and the value for each item to the message body.
-   $message .= ucfirst($item).": $val\r\n\r\n"; // e.g Email: beshsaleh@gmail.com
+		 // if set and not empty, assign the value of the current item to $val.
+		 if (isset(${$item}) && !empty(${$item})) {
+			 $val = ${$item}; // values of $name, $email, and so on assigned to $val in each iteration
+		 } else { 
+				 // Otherwise, if a field has an empty value but is not specified as required, assign "Not provided" as its value.
+			 $val = "Not provided";
+		 }
+		 // If an array, expand as a comma-separated string (e.g. values from multiple choice elements like checkbox groups, <select> lists, 
+			 // submitted as sub-arrays of a $_POST array). (not included in this demo)
+		 if (is_array($val)) {
+			 $val = implode(", ", $val); // subarrays are converted into comma-separated strings (adds ", " between each)
+		 }
+		 // Replace underscores and hyphens in the key with spaces.
+		 $item = str_replace(array('_', '-'), ' ', $item); 
+		 // Add a label and the value for each item to the message body (e.g. Email: beshsaleh@gmail.com).
+		 // Note: This is formatted differently for the remote version.
+		 $message .= "<label style='font-family:sans-serif;'><strong>" . ucfirst($item) . "</strong></label>:<br><span style='font-family:sans-serif;'>$val</span>\r\n\r\n";
    }
 
   // Limit the line length to 200 characters.
@@ -143,7 +144,7 @@ if (!$suspect && !$missing && !$issues) {
         $mail->addAddress($to); // add a recipient ($to is set in contact.php)
         $mail->addReplyTo('no-reply@beshsaleh.com', 'Please do not reply to this email.');
         $mail->Subject = $subject;
-        $mail->Body = "<p>{$firstname} {$lastname} sent the following message to MiniBlog:</p><br>" . nl2br($message);
+        $mail->Body = "<p style='font-family:sans-serif;'><strong>{$first_name} {$last_name} sent the following message to MiniBlog:</strong></p><br>" . nl2br($message);
         
         // If the message was successfully processed and sent, send the user a confirmation email.
         if ($mail->send()) {
@@ -166,8 +167,8 @@ if (!$suspect && !$missing && !$issues) {
             $mail2->addAddress($email); // add a recipient
             $mail2->addReplyTo('no-reply@beshsaleh.com', 'Please do not reply to this email.');
             $mail2->Subject = 'Thank You for Contacting MiniBlog';
-            $mail2->Body = '<h1>Thank You for Contacting MiniBlog</h1>
-            <p>Hi, ' . $firstname . '. You sent the following message to MiniBlog:<p/><br>' . nl2br($message);
+            $mail2->Body = '<h1 style="font-family:sans-serif;">Thank You for Contacting MiniBlog</h1>
+            <p style="font-family:sans-serif;"><strong>Hi, ' . $first_name . '. You sent the following message to MiniBlog:</strong><p/><br>' . nl2br($message);
             $mail2->send();
         }
         

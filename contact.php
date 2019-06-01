@@ -18,11 +18,11 @@ if (isset($_POST["send"])) {
   $subject = "Message from MiniBlog";
     
   // List expected fields - the name attribute values.
-  $expected = array("firstname", "lastname", "email", "phone", "comment", "interests");
+  $expected = array("first_name", "last_name", "email", "phone", "comment", "interests");
     
   // Set required fields (attributes not listed here are optional). If a required field is empty when the form is submitted, it
   // will be added to the $missing array.
-  $required = array("firstname", "lastname", "email", "comment");
+  $required = array("first_name", "last_name", "email", "comment");
     
   if (!isset($_POST["interests"])) {
     $_POST["interests"] = array();
@@ -75,33 +75,33 @@ if (isset($_POST["send"])) {
         <div class="row">
           <div class="col-sm-6">
             <div class="form-group">
-              <label for="firstname">First Name <i class="fa fa-asterisk"></i>
-              <!-- If the $missing array isn't empty and "firstname" is in the $missing array, display an error message. -->
-              <?php if ($missing && in_array("firstname", $missing)) { ?>
+              <label for="first_name">First Name <i class="fa fa-asterisk"></i>
+              <!-- If the $missing array isn't empty and "first_name" is in the $missing array, display an error message. -->
+              <?php if ($missing && in_array("first_name", $missing)) { ?>
                 <span class="warning">Enter first name</span>
               <?php } ?>                
               </label>
-              <input type="text" class="form-control" name="firstname" autocomplete="off" id="firstname" placeholder="Enter first name" 
+              <input type="text" class="form-control" name="first_name" autocomplete="off" id="first-name" placeholder="Enter first name" 
               <?php
-              // If a firstname value is missing or there is an error, preserve/persist the data in the input field.
+              // If a first_name value is missing or there is an error, preserve/persist the data in the input field.
               if ($missing || $issues) {                 
-                 echo 'value="' . htmlentities($firstname, ENT_COMPAT, 'UTF-8') . '"';
+                 echo 'value="' . htmlentities($first_name, ENT_COMPAT, 'UTF-8') . '"';
               } ?>>
             </div>
           </div>
           <div class="col-sm-6">
             <div class="form-group">
-              <label for="lastname">Last Name <i class="fa fa-asterisk"></i>
-              <!-- If the $missing array isn't empty and "lastname" is in the $missing array, display an error message. -->
-              <?php if ($missing && in_array("lastname", $missing)) { ?>
+              <label for="last_name">Last Name <i class="fa fa-asterisk"></i>
+              <!-- If the $missing array isn't empty and "last_name" is in the $missing array, display an error message. -->
+              <?php if ($missing && in_array("last_name", $missing)) { ?>
                 <span class="warning">Enter last name</span>
               <?php } ?>                
               </label>
-              <input type="text" class="form-control" name="lastname" autocomplete="off" id="lastname" placeholder="Enter last name" 
+              <input type="text" class="form-control" name="last_name" autocomplete="off" id="last-name" placeholder="Enter last name" 
               <?php
-              // If a lastname value is missing or there is an error, preserve/persist the data in the input field.
+              // If a last_name value is missing or there is an error, preserve/persist the data in the input field.
               if ($missing || $issues) {                 
-                 echo 'value="' . htmlentities($lastname, ENT_COMPAT, 'UTF-8') . '"';
+                 echo 'value="' . htmlentities($last_name, ENT_COMPAT, 'UTF-8') . '"';
               } ?>>
             </div>
           </div>

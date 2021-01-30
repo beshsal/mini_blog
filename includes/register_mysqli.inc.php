@@ -115,9 +115,9 @@ if (isset($_POST["fname"]) && isset($_POST["lname"]) && isset($_POST["email"]) &
           $errors = array_merge($errors, $validatePwd->getErrors());    
         }
 
-        // Make sure the values from the password and the re-entered password fields are not equal.
+        // Check if the values from the password and the re-entered password fields are not equal.
         if ($password != $confirm_pwd) {
-          // If they are, add an error message to the $errors array.
+          // If they aren't, add an error message to the $errors array.
           $errors[] = "Your passwords do not match.";
         }
     } else {
